@@ -1,0 +1,1 @@
+// App entry with routes for client form, upload, and admin
