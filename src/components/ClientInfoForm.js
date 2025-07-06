@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 
 export default function ClientInfoForm() {
@@ -191,7 +192,6 @@ function Error({ text }) {
   return <div style={{ color: 'red', fontSize: '0.8rem', marginBottom: '1rem' }}>{text}</div>;
 }
 
-// Styles
 const wrapper = {
   minHeight: '100vh',
   background: '#f5f5f5',
