@@ -1,1 +1,1 @@
-[FULL CODE INSERTED HERE MANUALLY IN NEXT STEP]
+// Full red-themed, professional version coming next step
