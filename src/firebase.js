@@ -1,1 +1,1 @@
-// Firebase config placeholder
+// Add your Firebase config here if needed

@@ -17,4 +17,3 @@ function App() {
 }
 
 export default App;
-// App entry with routes for client form, upload, and admin

@@ -1,3 +1,3 @@
 # Contract Connect MVP
 
-Client intake, photo upload, tagging, and admin dashboard.
+Clean reset version with routing and components wired up.
