@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+<h1 style={{ color: 'red', textAlign: 'center' }}>🔥 TEST VERSION LOADED 🔥</h1>
 
 export default function ClientInfoForm() {
   const [step, setStep] = useState(1);
