@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function ClientInfoForm() {
   const [step, setStep] = useState(1);
@@ -10,18 +10,39 @@ export default function ClientInfoForm() {
   });
 
   const taskOptions = [
-    { key: 'paint', label: 'Paint', icon: '🖌️' },
-    { key: 'flooring', label: 'Flooring', icon: '🪵' },
-    { key: 'drywall', label: 'Drywall', icon: '🧱' },
-    { key: 'lighting', label: 'Lighting', icon: '💡' }
+    { key: 'paint', label: 'Paint', icon: 'fa-paint-roller' },
+    { key: 'flooring', label: 'Flooring', icon: 'fa-ruler-combined' },
+    { key: 'drywall', label: 'Drywall', icon: 'fa-border-all' },
+    { key: 'lighting', label: 'Lighting', icon: 'fa-lightbulb' },
+    { key: 'plumbing', label: 'Plumbing', icon: 'fa-faucet' },
+    { key: 'roofing', label: 'Roofing', icon: 'fa-house-chimney' },
+    { key: 'hvac', label: 'HVAC', icon: 'fa-temperature-high' },
+    { key: 'windows', label: 'Windows', icon: 'fa-window-maximize' },
+    { key: 'doors', label: 'Doors', icon: 'fa-door-open' },
+    { key: 'landscaping', label: 'Landscaping', icon: 'fa-tree' },
+    { key: 'cabinets', label: 'Cabinets', icon: 'fa-kitchen-set' }
   ];
 
   const taskPricing = {
     paint: 2.25,
     flooring: 6.25,
     drywall: 350,
-    lighting: 175
+    lighting: 175,
+    plumbing: 500,
+    roofing: 850,
+    hvac: 950,
+    windows: 650,
+    doors: 300,
+    landscaping: 700,
+    cabinets: 1200
   };
+
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css";
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
+  }, []);
 
   const stepTitles = ['Contact Info', 'Project Scope', 'Upload & Estimate'];
 
@@ -82,12 +103,11 @@ export default function ClientInfoForm() {
     setStep(step - 1);
     setErrors({});
   };
-
   const renderPreview = () => (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '1rem' }}>
       {formData.photos.map((file, idx) => (
         <img key={idx} src={URL.createObjectURL(file)} alt="preview"
-             style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 6, boxShadow: '0 2px 6px rgba(0,0,0,0.15)' }} />
+             style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 6 }} />
       ))}
     </div>
   );
@@ -95,13 +115,11 @@ export default function ClientInfoForm() {
   if (submitted) {
     return (
       <div style={wrapper}>
-        <div style={logoWrapper}>
-          <img src="/ContractConnect_Logo_Smaller.png" alt="Contract Connect Logo" style={logoStyle} />
-        </div>
+        <img src="/ContractConnect_Logo_Smaller.png" alt="Logo" style={logoStyle} />
         <div style={card}>
-          <h2 style={title}>Thank You, {formData.name.split(' ')[0]}!</h2>
+          <h2 style={title}>Thanks, {formData.name.split(' ')[0]}!</h2>
           <p>We’ve received your request and will follow up shortly.</p>
-          <p><strong>Estimated Total:</strong> ${formData.estimate.toLocaleString()}</p>
+          <p><strong>Estimate:</strong> ${formData.estimate.toLocaleString()}</p>
         </div>
       </div>
     );
@@ -109,9 +127,7 @@ export default function ClientInfoForm() {
 
   return (
     <div style={wrapper}>
-      <div style={logoWrapper}>
-        <img src="/ContractConnect_Logo_Smaller.png" alt="Contract Connect Logo" style={logoStyle} />
-      </div>
+      <img src="/ContractConnect_Logo_Smaller.png" alt="Logo" style={logoStyle} />
       <div style={card}>
         <ProgressBar step={step} total={3} />
         <h2 style={title}>{stepTitles[step - 1]}</h2>
@@ -122,7 +138,7 @@ export default function ClientInfoForm() {
             <Field name="email" value={formData.email} onChange={handleChange} placeholder="Email" error={errors.email} />
             <Field name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone (optional)" />
             <Field name="address" value={formData.address} onChange={handleChange} placeholder="Project Address" error={errors.address} />
-            <label style={label}>Preferred Contact Method</label>
+            <label style={label}>Contact Preference</label>
             <select name="contact" value={formData.contact} onChange={handleChange} style={input}>
               <option>Email</option>
               <option>Phone</option>
@@ -145,20 +161,24 @@ export default function ClientInfoForm() {
 
             <label style={label}>Select Tasks</label>
             <div style={taskGrid}>
-              {taskOptions.map(({ key, label, icon }) => (
-                <div
-                  key={key}
-                  onClick={() => toggleTask(key)}
-                  style={{
-                    ...taskTile,
-                    backgroundColor: formData.tasks.includes(key) ? '#c80000' : '#f1f1f1',
-                    color: formData.tasks.includes(key) ? '#fff' : '#000'
-                  }}
-                >
-                  <span style={{ fontSize: '1.5rem' }}>{icon}</span>
-                  <div>{label}</div>
-                </div>
-              ))}
+              {taskOptions.map(({ key, label, icon }) => {
+                const selected = formData.tasks.includes(key);
+                return (
+                  <div
+                    key={key}
+                    onClick={() => toggleTask(key)}
+                    style={{
+                      ...taskTile,
+                      backgroundColor: selected ? '#c80000' : '#fff',
+                      color: selected ? '#fff' : '#c80000',
+                      border: selected ? '2px solid #c80000' : '1px solid #ccc'
+                    }}
+                  >
+                    <i className={`fas ${icon}`} style={{ fontSize: '1.5rem', marginBottom: 6 }} />
+                    <div style={{ fontSize: '0.95rem' }}>{label}</div>
+                  </div>
+                );
+              })}
             </div>
             {errors.tasks && <Error text={errors.tasks} />}
           </>
@@ -181,14 +201,20 @@ export default function ClientInfoForm() {
   );
 }
 
-// Subcomponents
+// Reusable UI
 
 function ProgressBar({ step, total }) {
   const percent = (step - 1) / (total - 1) * 100;
   return (
     <div style={{ marginBottom: 16 }}>
       <div style={{ height: 6, background: '#eee', borderRadius: 10 }}>
-        <div style={{ width: `${percent}%`, height: '100%', background: '#c80000', borderRadius: 10, transition: 'width 0.3s ease' }} />
+        <div style={{
+          width: `${percent}%`,
+          height: '100%',
+          background: '#c80000',
+          borderRadius: 10,
+          transition: 'width 0.3s ease'
+        }} />
       </div>
       <p style={{ fontSize: '0.9rem', marginTop: 8, color: '#555' }}>
         Step {step} of {total}
@@ -219,18 +245,12 @@ const wrapper = {
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'flex-start',
-  padding: '0px 1rem 1rem'
-};
-
-const logoWrapper = {
-  textAlign: 'center',
-  marginBottom: '0px'
+  padding: '1rem'
 };
 
 const logoStyle = {
   width: '500px',
   height: 'auto',
-  display: 'block',
   marginBottom: '1rem'
 };
 
@@ -265,6 +285,22 @@ const label = {
   display: 'block'
 };
 
+const taskGrid = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(2, 1fr)',
+  gap: '1rem',
+  marginBottom: '1rem'
+};
+
+const taskTile = {
+  borderRadius: '10px',
+  padding: '1rem',
+  textAlign: 'center',
+  cursor: 'pointer',
+  fontWeight: 600,
+  transition: 'all 0.2s ease'
+};
+
 const buttonRow = {
   display: 'flex',
   justifyContent: 'space-between',
@@ -288,22 +324,4 @@ const secondaryBtn = {
   ...primaryBtn,
   background: '#eee',
   color: '#333'
-};
-
-const taskGrid = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(2, 1fr)',
-  gap: '1rem',
-  marginBottom: '1rem'
-};
-
-const taskTile = {
-  borderRadius: '8px',
-  padding: '1rem',
-  textAlign: 'center',
-  cursor: 'pointer',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-  fontWeight: '600',
-  fontSize: '1rem',
-  transition: 'all 0.2s ease'
 };
