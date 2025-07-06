@@ -1,5 +1,4 @@
-
-   import React, { useState } from 'react';
+import React, { useState } from 'react';
 
 export default function ClientInfoForm() {
   const [step, setStep] = useState(1);
@@ -165,7 +164,7 @@ export default function ClientInfoForm() {
   );
 }
 
-// Components
+// Subcomponents
 
 function ProgressBar({ step, total }) {
   const percent = (step - 1) / (total - 1) * 100;
@@ -195,6 +194,7 @@ function Error({ text }) {
 }
 
 // Styles
+
 const wrapper = {
   minHeight: '100vh',
   background: '#f5f5f5',
@@ -202,12 +202,13 @@ const wrapper = {
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'flex-start',
-  padding: '0.25rem 1rem 1rem' // ⬆ very close to top
+  padding: '0px 1rem 1rem', // no top padding
+  marginTop: '0'            // override browser spacing
 };
 
 const logoWrapper = {
   textAlign: 'center',
-  marginBottom: '0.25rem' // ⬇ minimal space between logo and form
+  marginBottom: '0px' // no gap between logo and form
 };
 
 const hugeLogo = {
