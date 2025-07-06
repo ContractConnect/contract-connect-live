@@ -1,8 +1,9 @@
-
 import React, { useState } from 'react';
 
 export default function ClientInfoForm() {
   const [step, setStep] = useState(1);
+  const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', address: '', contact: 'Email',
     room: '', tasks: [], photos: [], estimate: 0
@@ -14,6 +15,8 @@ export default function ClientInfoForm() {
     drywall: 350,
     lighting: 175
   };
+
+  const stepTitles = ['Contact Info', 'Project Scope', 'Upload & Estimate'];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,34 +42,80 @@ export default function ClientInfoForm() {
     let total = 0;
     for (const task of formData.tasks) {
       if (task === 'drywall') total += taskPricing[task];
-      else total += 150 * taskPricing[task]; // 150 sqft estimate
+      else total += 150 * taskPricing[task]; // avg room = 150 sqft
     }
     setFormData(prev => ({ ...prev, estimate: total }));
   };
 
-  const nextStep = () => {
-    if (step === 3) calculateEstimate();
-    setStep(prev => prev + 1);
+  const validateStep = () => {
+    const newErrors = {};
+    if (step === 1) {
+      if (!formData.name) newErrors.name = 'Required';
+      if (!formData.email) newErrors.email = 'Required';
+      if (!formData.address) newErrors.address = 'Required';
+    }
+    if (step === 2) {
+      if (!formData.room) newErrors.room = 'Select a room type';
+      if (formData.tasks.length === 0) newErrors.tasks = 'Select at least one task';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const prevStep = () => setStep(prev => prev - 1);
+  const nextStep = () => {
+    if (!validateStep()) return;
+    if (step === 3) {
+      calculateEstimate();
+      setSubmitted(true);
+    } else {
+      setStep(prev => prev + 1);
+    }
+  };
+
+  const prevStep = () => {
+    setStep(prev => prev - 1);
+    setErrors({});
+  };
+
+  const renderPreview = () => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+      {formData.photos.map((file, idx) => (
+        <img key={idx} src={URL.createObjectURL(file)} alt="preview" style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 4 }} />
+      ))}
+    </div>
+  );
+
+  if (submitted) {
+    return (
+      <div style={pageWrapper}>
+        <div style={cardStyle}>
+          <h2 style={headerStyle}>Thanks, {formData.name.split(' ')[0]}!</h2>
+          <p>We've received your request and will follow up shortly.</p>
+          <p><strong>Estimate:</strong> ${formData.estimate.toLocaleString()}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={pageWrapper}>
       <div style={cardStyle}>
+        <p style={{ fontSize: '0.9rem', color: '#666' }}>
+          Step {step} of 3: <strong>{stepTitles[step - 1]}</strong>
+        </p>
         <h2 style={headerStyle}>Get Your Free Project Estimate</h2>
 
         {step === 1 && (
           <>
-            <input name="name" placeholder="Full Name" onChange={handleChange} value={formData.name} style={inputStyle} />
-            <input name="email" placeholder="Email" onChange={handleChange} value={formData.email} style={inputStyle} />
-            <input name="phone" placeholder="Phone" onChange={handleChange} value={formData.phone} style={inputStyle} />
-            <input name="address" placeholder="Project Address" onChange={handleChange} value={formData.address} style={inputStyle} />
-            <label style={labelStyle}>Preferred Contact Method</label>
+            <Input name="name" value={formData.name} onChange={handleChange} placeholder="Full Name" error={errors.name} />
+            <Input name="email" value={formData.email} onChange={handleChange} placeholder="Email" error={errors.email} />
+            <Input name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone (optional)" />
+            <Input name="address" value={formData.address} onChange={handleChange} placeholder="Project Address" error={errors.address} />
+            <label style={labelStyle}>Contact Preference</label>
             <select name="contact" onChange={handleChange} value={formData.contact} style={inputStyle}>
-              <option value="Email">Email</option>
-              <option value="Phone">Phone</option>
-              <option value="Either">Either</option>
+              <option>Email</option>
+              <option>Phone</option>
+              <option>Either</option>
             </select>
           </>
         )}
@@ -74,34 +123,33 @@ export default function ClientInfoForm() {
         {step === 2 && (
           <>
             <label style={labelStyle}>Room Type</label>
-            <select name="room" onChange={handleChange} value={formData.room} style={inputStyle}>
+            <select name="room" value={formData.room} onChange={handleChange} style={inputStyle}>
               <option value="">Select...</option>
-              <option value="Kitchen">Kitchen</option>
-              <option value="Bathroom">Bathroom</option>
-              <option value="Bedroom">Bedroom</option>
-              <option value="Living Room">Living Room</option>
+              <option>Kitchen</option>
+              <option>Bathroom</option>
+              <option>Bedroom</option>
+              <option>Living Room</option>
             </select>
+            {errors.room && <ErrorText text={errors.room} />}
 
-            <label style={labelStyle}>What work do you need?</label>
+            <label style={labelStyle}>Work Needed</label>
             <div style={checkboxGroup}>
-              <label><input type="checkbox" value="paint" onChange={handleTaskChange} /> Paint</label>
-              <label><input type="checkbox" value="flooring" onChange={handleTaskChange} /> Flooring</label>
-              <label><input type="checkbox" value="drywall" onChange={handleTaskChange} /> Drywall Repair</label>
-              <label><input type="checkbox" value="lighting" onChange={handleTaskChange} /> Recessed Lighting</label>
+              {['paint', 'flooring', 'drywall', 'lighting'].map(task => (
+                <label key={task}>
+                  <input type="checkbox" value={task} checked={formData.tasks.includes(task)} onChange={handleTaskChange} />
+                  {' '}{task[0].toUpperCase() + task.slice(1)}
+                </label>
+              ))}
             </div>
+            {errors.tasks && <ErrorText text={errors.tasks} />}
           </>
         )}
 
         {step === 3 && (
           <>
-            <label style={labelStyle}>Upload Photos (optional)</label>
+            <label style={labelStyle}>Upload Photos</label>
             <input type="file" multiple onChange={handleFiles} style={inputStyle} />
-            <button onClick={calculateEstimate} style={buttonStyle}>Calculate Estimate</button>
-            {formData.estimate > 0 && (
-              <div style={{ marginTop: '1rem', fontWeight: 'bold' }}>
-                Estimated Total: ${formData.estimate.toLocaleString()}
-              </div>
-            )}
+            {formData.photos.length > 0 && renderPreview()}
           </>
         )}
 
@@ -109,18 +157,35 @@ export default function ClientInfoForm() {
           {step > 1 && (
             <button onClick={prevStep} style={secondaryButton}>Back</button>
           )}
-          {step < 3 && (
-            <button onClick={nextStep} style={buttonStyle}>Next</button>
-          )}
+          <button onClick={nextStep} style={buttonStyle}>
+            {step === 3 ? 'Submit' : 'Next'}
+          </button>
         </div>
       </div>
     </div>
   );
 }
 
+// ========== Subcomponents ==========
+
+function Input({ name, value, onChange, placeholder, error }) {
+  return (
+    <>
+      <input name={name} value={value} onChange={onChange} placeholder={placeholder} style={inputStyle} />
+      {error && <ErrorText text={error} />}
+    </>
+  );
+}
+
+function ErrorText({ text }) {
+  return <div style={{ color: 'red', fontSize: '0.8rem', marginTop: '-0.5rem', marginBottom: '1rem' }}>{text}</div>;
+}
+
+// ========== Styles ==========
+
 const pageWrapper = {
   minHeight: '100vh',
-  background: '#f7f7f7',
+  background: '#f4f4f4',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -133,12 +198,12 @@ const cardStyle = {
   padding: '2rem',
   maxWidth: '480px',
   width: '100%',
-  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)'
+  boxShadow: '0 6px 20px rgba(0, 0, 0, 0.08)'
 };
 
 const headerStyle = {
-  marginBottom: '1.5rem',
-  fontSize: '1.4rem',
+  marginBottom: '1rem',
+  fontSize: '1.5rem',
   fontWeight: 'bold'
 };
 
@@ -178,7 +243,7 @@ const buttonStyle = {
 
 const secondaryButton = {
   ...buttonStyle,
-  backgroundColor: '#eee',
+  backgroundColor: '#eaeaea',
   color: '#333'
 };
 
