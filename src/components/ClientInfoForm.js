@@ -89,8 +89,10 @@ export default function ClientInfoForm() {
   if (submitted) {
     return (
       <div style={wrapper}>
+        <div style={logoContainer}>
+          <img src="/ContractConnect Logo.jpg" alt="Contract Connect Logo" style={largeLogo} />
+        </div>
         <div style={card}>
-          <img src="/ContractConnect Logo.jpg" alt="Contract Connect Logo" style={logoStyle} />
           <h2 style={title}>Thank You, {formData.name.split(' ')[0]}!</h2>
           <p>We’ve received your request and will follow up shortly.</p>
           <p><strong>Estimated Total:</strong> ${formData.estimate.toLocaleString()}</p>
@@ -101,8 +103,10 @@ export default function ClientInfoForm() {
 
   return (
     <div style={wrapper}>
+      <div style={logoContainer}>
+        <img src="/ContractConnect Logo.jpg" alt="Contract Connect Logo" style={largeLogo} />
+      </div>
       <div style={card}>
-        <img src="/ContractConnect Logo.jpg" alt="Contract Connect Logo" style={logoStyle} />
         <ProgressBar step={step} total={3} />
         <h2 style={title}>{stepTitles[step - 1]}</h2>
 
@@ -194,9 +198,21 @@ const wrapper = {
   minHeight: '100vh',
   background: '#f5f5f5',
   display: 'flex',
+  flexDirection: 'column',
   alignItems: 'center',
-  justifyContent: 'center',
+  justifyContent: 'flex-start',
   padding: '2rem'
+};
+
+const logoContainer = {
+  textAlign: 'center',
+  marginBottom: '1.5rem'
+};
+
+const largeLogo = {
+  maxWidth: '220px',
+  width: '100%',
+  height: 'auto'
 };
 
 const card = {
@@ -206,12 +222,6 @@ const card = {
   maxWidth: 500,
   width: '100%',
   boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-};
-
-const logoStyle = {
-  maxWidth: '160px',
-  display: 'block',
-  margin: '0 auto 1rem'
 };
 
 const title = {
