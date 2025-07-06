@@ -89,8 +89,8 @@ export default function ClientInfoForm() {
   if (submitted) {
     return (
       <div style={wrapper}>
-        <div style={logoContainer}>
-          <img src="/ContractConnect Logo.jpg" alt="Contract Connect Logo" style={largeLogo} />
+        <div style={logoWrapper}>
+          <img src="/ContractConnect Logo.jpg" alt="Contract Connect Logo" style={hugeLogo} />
         </div>
         <div style={card}>
           <h2 style={title}>Thank You, {formData.name.split(' ')[0]}!</h2>
@@ -103,8 +103,8 @@ export default function ClientInfoForm() {
 
   return (
     <div style={wrapper}>
-      <div style={logoContainer}>
-        <img src="/ContractConnect Logo.jpg" alt="Contract Connect Logo" style={largeLogo} />
+      <div style={logoWrapper}>
+        <img src="/ContractConnect Logo.jpg" alt="Contract Connect Logo" style={hugeLogo} />
       </div>
       <div style={card}>
         <ProgressBar step={step} total={3} />
@@ -204,13 +204,13 @@ const wrapper = {
   padding: '2rem'
 };
 
-const logoContainer = {
+const logoWrapper = {
   textAlign: 'center',
-  marginBottom: '1.5rem'
+  marginBottom: '3rem'
 };
 
-const largeLogo = {
-  maxWidth: '220px',
+const hugeLogo = {
+  maxWidth: '1000px',
   width: '100%',
   height: 'auto'
 };
