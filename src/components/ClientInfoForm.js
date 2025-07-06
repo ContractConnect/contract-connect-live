@@ -6,36 +6,23 @@ export default function ClientInfoForm() {
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', address: '', contact: 'Email',
-    room: '', tasks: [], photos: [], estimate: 0
+    room: '', tasks: [], photos: []
   });
+  const [estimate, setEstimate] = useState(0);
 
   const taskOptions = [
-    { key: 'paint', label: 'Paint', icon: 'fa-paint-roller' },
-    { key: 'flooring', label: 'Flooring', icon: 'fa-ruler-combined' },
-    { key: 'drywall', label: 'Drywall', icon: 'fa-border-all' },
-    { key: 'lighting', label: 'Lighting', icon: 'fa-lightbulb' },
-    { key: 'plumbing', label: 'Plumbing', icon: 'fa-faucet' },
-    { key: 'roofing', label: 'Roofing', icon: 'fa-house-chimney' },
-    { key: 'hvac', label: 'HVAC', icon: 'fa-temperature-high' },
-    { key: 'windows', label: 'Windows', icon: 'fa-window-maximize' },
-    { key: 'doors', label: 'Doors', icon: 'fa-door-open' },
-    { key: 'landscaping', label: 'Landscaping', icon: 'fa-tree' },
-    { key: 'cabinets', label: 'Cabinets', icon: 'fa-kitchen-set' }
+    { key: 'paint', label: 'Paint', icon: 'fa-paint-roller', rate: 2.25 },
+    { key: 'flooring', label: 'Flooring', icon: 'fa-ruler-combined', rate: 6.25 },
+    { key: 'drywall', label: 'Drywall', icon: 'fa-border-all', rate: 350 },
+    { key: 'lighting', label: 'Lighting', icon: 'fa-lightbulb', rate: 175 },
+    { key: 'plumbing', label: 'Plumbing', icon: 'fa-faucet', rate: 500 },
+    { key: 'roofing', label: 'Roofing', icon: 'fa-house-chimney', rate: 850 },
+    { key: 'hvac', label: 'HVAC', icon: 'fa-temperature-high', rate: 950 },
+    { key: 'windows', label: 'Windows', icon: 'fa-window-maximize', rate: 650 },
+    { key: 'doors', label: 'Doors', icon: 'fa-door-open', rate: 300 },
+    { key: 'landscaping', label: 'Landscaping', icon: 'fa-tree', rate: 700 },
+    { key: 'cabinets', label: 'Cabinets', icon: 'fa-kitchen-set', rate: 1200 }
   ];
-
-  const taskPricing = {
-    paint: 2.25,
-    flooring: 6.25,
-    drywall: 350,
-    lighting: 175,
-    plumbing: 500,
-    roofing: 850,
-    hvac: 950,
-    windows: 650,
-    doors: 300,
-    landscaping: 700,
-    cabinets: 1200
-  };
 
   useEffect(() => {
     const link = document.createElement('link');
@@ -43,6 +30,16 @@ export default function ClientInfoForm() {
     link.rel = "stylesheet";
     document.head.appendChild(link);
   }, []);
+
+  useEffect(() => {
+    // Recalculate total estimate live
+    let total = 0;
+    for (const task of formData.tasks) {
+      const t = taskOptions.find(opt => opt.key === task);
+      if (t) total += t.key === 'drywall' ? t.rate : t.rate * 150;
+    }
+    setEstimate(total);
+  }, [formData.tasks]);
 
   const stepTitles = ['Contact Info', 'Project Scope', 'Upload & Estimate'];
 
@@ -65,15 +62,6 @@ export default function ClientInfoForm() {
     setFormData(prev => ({ ...prev, photos: files }));
   };
 
-  const calculateEstimate = () => {
-    let total = 0;
-    for (const task of formData.tasks) {
-      if (task === 'drywall') total += taskPricing[task];
-      else total += 150 * taskPricing[task];
-    }
-    setFormData(prev => ({ ...prev, estimate: total }));
-  };
-
   const validateStep = () => {
     const newErrors = {};
     if (step === 1) {
@@ -92,7 +80,6 @@ export default function ClientInfoForm() {
   const nextStep = () => {
     if (!validateStep()) return;
     if (step === 3) {
-      calculateEstimate();
       setSubmitted(true);
     } else {
       setStep(step + 1);
@@ -119,7 +106,7 @@ export default function ClientInfoForm() {
         <div style={card}>
           <h2 style={title}>Thanks, {formData.name.split(' ')[0]}!</h2>
           <p>We’ve received your request and will follow up shortly.</p>
-          <p><strong>Estimate:</strong> ${formData.estimate.toLocaleString()}</p>
+          <p><strong>Estimate:</strong> ${estimate.toLocaleString()}</p>
         </div>
       </div>
     );
@@ -161,8 +148,9 @@ export default function ClientInfoForm() {
 
             <label style={label}>Select Tasks</label>
             <div style={taskGrid}>
-              {taskOptions.map(({ key, label, icon }) => {
+              {taskOptions.map(({ key, label, icon, rate }) => {
                 const selected = formData.tasks.includes(key);
+                const displayPrice = key === 'drywall' ? `$${rate}` : `$${(rate * 150).toFixed(0)}`;
                 return (
                   <div
                     key={key}
@@ -175,11 +163,17 @@ export default function ClientInfoForm() {
                     }}
                   >
                     <i className={`fas ${icon}`} style={{ fontSize: '1.5rem', marginBottom: 6 }} />
-                    <div style={{ fontSize: '0.95rem' }}>{label}</div>
+                    <div style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>{label}</div>
+                    <div style={{ fontSize: '0.85rem', color: selected ? '#fff' : '#999' }}>{displayPrice}</div>
                   </div>
                 );
               })}
             </div>
+
+            <div style={{ marginTop: '0.5rem', fontWeight: 'bold', fontSize: '1rem' }}>
+              Subtotal: ${estimate.toLocaleString()}
+            </div>
+
             {errors.tasks && <Error text={errors.tasks} />}
           </>
         )}
