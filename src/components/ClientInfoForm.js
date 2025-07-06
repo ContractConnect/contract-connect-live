@@ -1,6 +1,4 @@
-
 import React, { useState } from 'react';
-<h1 style={{ color: 'red', textAlign: 'center' }}>🔥 TEST VERSION LOADED 🔥</h1>
 
 export default function ClientInfoForm() {
   const [step, setStep] = useState(1);
@@ -92,6 +90,7 @@ export default function ClientInfoForm() {
     return (
       <div style={wrapper}>
         <div style={card}>
+          <img src="/ContractConnect Logo.jpg" alt="Contract Connect Logo" style={logoStyle} />
           <h2 style={title}>Thank You, {formData.name.split(' ')[0]}!</h2>
           <p>We’ve received your request and will follow up shortly.</p>
           <p><strong>Estimated Total:</strong> ${formData.estimate.toLocaleString()}</p>
@@ -103,6 +102,7 @@ export default function ClientInfoForm() {
   return (
     <div style={wrapper}>
       <div style={card}>
+        <img src="/ContractConnect Logo.jpg" alt="Contract Connect Logo" style={logoStyle} />
         <ProgressBar step={step} total={3} />
         <h2 style={title}>{stepTitles[step - 1]}</h2>
 
@@ -206,6 +206,12 @@ const card = {
   maxWidth: 500,
   width: '100%',
   boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+};
+
+const logoStyle = {
+  maxWidth: '160px',
+  display: 'block',
+  margin: '0 auto 1rem'
 };
 
 const title = {
