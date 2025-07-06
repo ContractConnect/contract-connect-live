@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 export default function ClientInfoForm() {
@@ -91,7 +90,7 @@ export default function ClientInfoForm() {
     return (
       <div style={wrapper}>
         <div style={logoWrapper}>
-          <img src="/ContractConnect Logo.png" alt="Contract Connect Logo" style={hugeLogo} />
+          <img src="/ContractConnect_Logo_Smaller.png" alt="Contract Connect Logo" style={logoStyle} />
         </div>
         <div style={card}>
           <h2 style={title}>Thank You, {formData.name.split(' ')[0]}!</h2>
@@ -105,7 +104,7 @@ export default function ClientInfoForm() {
   return (
     <div style={wrapper}>
       <div style={logoWrapper}>
-        <img src="/ContractConnect Logo.png" alt="Contract Connect Logo" style={hugeLogo} />
+        <img src="/ContractConnect_Logo_Smaller.png" alt="Contract Connect Logo" style={logoStyle} />
       </div>
       <div style={card}>
         <ProgressBar step={step} total={3} />
@@ -192,6 +191,7 @@ function Error({ text }) {
   return <div style={{ color: 'red', fontSize: '0.8rem', marginBottom: '1rem' }}>{text}</div>;
 }
 
+// Styles
 const wrapper = {
   minHeight: '100vh',
   background: '#f5f5f5',
@@ -208,11 +208,11 @@ const logoWrapper = {
   marginBottom: '0px'
 };
 
-const hugeLogo = {
-  maxWidth: '1000px',
-  width: '100%',
+const logoStyle = {
+  width: '250px',
   height: 'auto',
-  display: 'block'
+  display: 'block',
+  marginBottom: '1rem'
 };
 
 const card = {
