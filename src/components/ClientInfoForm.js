@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+   import React, { useState } from 'react';
 
 export default function ClientInfoForm() {
   const [step, setStep] = useState(1);
@@ -42,7 +43,7 @@ export default function ClientInfoForm() {
     let total = 0;
     for (const task of formData.tasks) {
       if (task === 'drywall') total += taskPricing[task];
-      else total += 150 * taskPricing[task]; // avg room = 150 sqft
+      else total += 150 * taskPricing[task];
     }
     setFormData(prev => ({ ...prev, estimate: total }));
   };
@@ -201,12 +202,12 @@ const wrapper = {
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'flex-start',
-  padding: '0.5rem 1rem 1rem' // moved higher on page
+  padding: '0.25rem 1rem 1rem' // ⬆ very close to top
 };
 
 const logoWrapper = {
   textAlign: 'center',
-  marginBottom: '0.5rem' // tight spacing under logo
+  marginBottom: '0.25rem' // ⬇ minimal space between logo and form
 };
 
 const hugeLogo = {
