@@ -103,6 +103,7 @@ export default function ClientInfoForm() {
       <div style={cardStyle}>
         <ProgressBar step={step} titles={stepTitles} />
         <h2 style={headerStyle}>{stepTitles[step - 1]}</h2>
+
         {step === 1 && (
           <>
             <Input name="name" value={formData.name} onChange={handleChange} placeholder="Full Name" error={errors.name} />
@@ -168,7 +169,8 @@ export default function ClientInfoForm() {
     </div>
   );
 }
-// Subcomponents
+
+// Components
 
 function ProgressBar({ step, titles }) {
   const percent = ((step - 1) / (titles.length - 1)) * 100;
@@ -276,4 +278,3 @@ const buttonRow = {
   gap: '1rem',
   marginTop: '1rem'
 };
-
