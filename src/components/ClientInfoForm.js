@@ -90,7 +90,7 @@ export default function ClientInfoForm() {
     return (
       <div style={wrapper}>
         <div style={logoWrapper}>
-          <img src="/ContractConnect Logo.jpg" alt="Contract Connect Logo" style={hugeLogo} />
+          <img src="/ContractConnect Logo.png" alt="Contract Connect Logo" style={hugeLogo} />
         </div>
         <div style={card}>
           <h2 style={title}>Thank You, {formData.name.split(' ')[0]}!</h2>
@@ -104,7 +104,7 @@ export default function ClientInfoForm() {
   return (
     <div style={wrapper}>
       <div style={logoWrapper}>
-        <img src="/ContractConnect Logo.jpg" alt="Contract Connect Logo" style={hugeLogo} />
+        <img src="/ContractConnect Logo.png" alt="Contract Connect Logo" style={hugeLogo} />
       </div>
       <div style={card}>
         <ProgressBar step={step} total={3} />
@@ -277,3 +277,4 @@ const secondaryBtn = {
   background: '#eee',
   color: '#333'
 };
+
