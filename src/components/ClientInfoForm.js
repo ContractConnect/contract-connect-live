@@ -201,12 +201,12 @@ const wrapper = {
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'flex-start',
-  padding: '1rem 1rem 2rem' // less top padding
+  padding: '0.5rem 1rem 1rem' // moved higher on page
 };
 
 const logoWrapper = {
   textAlign: 'center',
-  marginBottom: '1.25rem' // tighter spacing under logo
+  marginBottom: '0.5rem' // tight spacing under logo
 };
 
 const hugeLogo = {
