@@ -201,12 +201,12 @@ const wrapper = {
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'flex-start',
-  padding: '2rem'
+  padding: '1rem 1rem 2rem' // less top padding
 };
 
 const logoWrapper = {
   textAlign: 'center',
-  marginBottom: '3rem'
+  marginBottom: '1.25rem' // tighter spacing under logo
 };
 
 const hugeLogo = {
@@ -277,4 +277,3 @@ const secondaryBtn = {
   background: '#eee',
   color: '#333'
 };
-
