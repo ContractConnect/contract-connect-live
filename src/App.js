@@ -22,3 +22,7 @@ export default function App() {
     </Router>
   );
 }
+import HomePage from './components/HomePage';
+
+<Route path="/" element={<HomePage />} />
+<Route path="/form" element={<ClientInfoForm />} />
