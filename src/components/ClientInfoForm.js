@@ -209,7 +209,7 @@ const logoWrapper = {
 };
 
 const logoStyle = {
-  width: '250px',
+  width: '500px', // doubled from 250px
   height: 'auto',
   display: 'block',
   marginBottom: '1rem'
