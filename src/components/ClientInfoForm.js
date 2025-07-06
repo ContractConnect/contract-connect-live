@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 
 export default function ClientInfoForm() {
@@ -16,7 +17,7 @@ export default function ClientInfoForm() {
     lighting: 175
   };
 
-  const stepTitles = ['Contact Info', 'Project Scope', 'Photos & Estimate'];
+  const stepTitles = ['Contact Info', 'Project Scope', 'Upload & Estimate'];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,7 +56,7 @@ export default function ClientInfoForm() {
       if (!formData.address) newErrors.address = 'Required';
     }
     if (step === 2) {
-      if (!formData.room) newErrors.room = 'Select a room type';
+      if (!formData.room) newErrors.room = 'Required';
       if (formData.tasks.length === 0) newErrors.tasks = 'Select at least one task';
     }
     setErrors(newErrors);
@@ -68,50 +69,50 @@ export default function ClientInfoForm() {
       calculateEstimate();
       setSubmitted(true);
     } else {
-      setStep(prev => prev + 1);
+      setStep(step + 1);
     }
   };
 
   const prevStep = () => {
-    setStep(prev => prev - 1);
+    setStep(step - 1);
     setErrors({});
   };
 
   const renderPreview = () => (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '1rem' }}>
       {formData.photos.map((file, idx) => (
         <img key={idx} src={URL.createObjectURL(file)} alt="preview"
-             style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8, boxShadow: '0 2px 6px rgba(0,0,0,0.15)' }} />
+             style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 6, boxShadow: '0 2px 6px rgba(0,0,0,0.15)' }} />
       ))}
     </div>
   );
 
   if (submitted) {
     return (
-      <div style={pageWrapper}>
-        <div style={cardStyle}>
-          <h2 style={headerStyle}>Thanks, {formData.name.split(' ')[0]}!</h2>
+      <div style={wrapper}>
+        <div style={card}>
+          <h2 style={title}>Thank You, {formData.name.split(' ')[0]}!</h2>
           <p>We’ve received your request and will follow up shortly.</p>
-          <p><strong>Estimate:</strong> ${formData.estimate.toLocaleString()}</p>
+          <p><strong>Estimated Total:</strong> ${formData.estimate.toLocaleString()}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div style={pageWrapper}>
-      <div style={cardStyle}>
-        <ProgressBar step={step} titles={stepTitles} />
-        <h2 style={headerStyle}>{stepTitles[step - 1]}</h2>
+    <div style={wrapper}>
+      <div style={card}>
+        <ProgressBar step={step} total={3} />
+        <h2 style={title}>{stepTitles[step - 1]}</h2>
 
         {step === 1 && (
           <>
-            <Input name="name" value={formData.name} onChange={handleChange} placeholder="Full Name" error={errors.name} />
-            <Input name="email" value={formData.email} onChange={handleChange} placeholder="Email" error={errors.email} />
-            <Input name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone (optional)" />
-            <Input name="address" value={formData.address} onChange={handleChange} placeholder="Project Address" error={errors.address} />
-            <label style={labelStyle}>Contact Preference</label>
-            <select name="contact" onChange={handleChange} value={formData.contact} style={inputStyle}>
+            <Field name="name" value={formData.name} onChange={handleChange} placeholder="Full Name" error={errors.name} />
+            <Field name="email" value={formData.email} onChange={handleChange} placeholder="Email" error={errors.email} />
+            <Field name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone (optional)" />
+            <Field name="address" value={formData.address} onChange={handleChange} placeholder="Project Address" error={errors.address} />
+            <label style={label}>Preferred Contact Method</label>
+            <select name="contact" value={formData.contact} onChange={handleChange} style={input}>
               <option>Email</option>
               <option>Phone</option>
               <option>Either</option>
@@ -121,49 +122,37 @@ export default function ClientInfoForm() {
 
         {step === 2 && (
           <>
-            <label style={labelStyle}>Room Type</label>
-            <select name="room" value={formData.room} onChange={handleChange} style={inputStyle}>
+            <label style={label}>Room Type</label>
+            <select name="room" value={formData.room} onChange={handleChange} style={input}>
               <option value="">Select...</option>
               <option>Kitchen</option>
               <option>Bathroom</option>
               <option>Bedroom</option>
               <option>Living Room</option>
             </select>
-            {errors.room && <ErrorText text={errors.room} />}
+            {errors.room && <Error text={errors.room} />}
 
-            <label style={labelStyle}>Work Needed</label>
+            <label style={label}>Tasks Needed</label>
             <div style={checkboxGroup}>
               {['paint', 'flooring', 'drywall', 'lighting'].map(task => (
-                <label key={task}>
-                  <input type="checkbox" value={task} checked={formData.tasks.includes(task)} onChange={handleTaskChange} />
-                  {' '}{task[0].toUpperCase() + task.slice(1)}
-                </label>
+                <label key={task}><input type="checkbox" value={task} checked={formData.tasks.includes(task)} onChange={handleTaskChange} /> {task}</label>
               ))}
             </div>
-            {errors.tasks && <ErrorText text={errors.tasks} />}
+            {errors.tasks && <Error text={errors.tasks} />}
           </>
         )}
 
         {step === 3 && (
           <>
-            <label style={labelStyle}>Upload Photos</label>
-            <input type="file" multiple onChange={handleFiles} style={inputStyle} />
+            <label style={label}>Upload Photos</label>
+            <input type="file" multiple onChange={handleFiles} style={input} />
             {formData.photos.length > 0 && renderPreview()}
-            {formData.estimate > 0 && (
-              <div style={{ marginTop: '1rem', fontWeight: 'bold', fontSize: '1.1rem' }}>
-                Estimated Total: ${formData.estimate.toLocaleString()}
-              </div>
-            )}
           </>
         )}
 
         <div style={buttonRow}>
-          {step > 1 && (
-            <button onClick={prevStep} style={secondaryButton}>Back</button>
-          )}
-          <button onClick={nextStep} style={buttonStyle}>
-            {step === 3 ? 'Submit' : 'Next'}
-          </button>
+          {step > 1 && <button style={secondaryBtn} onClick={prevStep}>Back</button>}
+          <button style={primaryBtn} onClick={nextStep}>{step === 3 ? 'Submit' : 'Next'}</button>
         </div>
       </div>
     </div>
@@ -172,79 +161,72 @@ export default function ClientInfoForm() {
 
 // Components
 
-function ProgressBar({ step, titles }) {
-  const percent = ((step - 1) / (titles.length - 1)) * 100;
+function ProgressBar({ step, total }) {
+  const percent = (step - 1) / (total - 1) * 100;
   return (
-    <div style={{ marginBottom: '1rem' }}>
-      <div style={{
-        height: 6, background: '#eee', borderRadius: 10, overflow: 'hidden',
-        marginBottom: 10
-      }}>
-        <div style={{
-          width: `${percent}%`, background: '#c80000',
-          height: '100%', transition: 'width 0.3s ease'
-        }} />
+    <div style={{ marginBottom: 16 }}>
+      <div style={{ height: 6, background: '#eee', borderRadius: 10 }}>
+        <div style={{ width: `${percent}%`, height: '100%', background: '#c80000', borderRadius: 10, transition: 'width 0.3s ease' }} />
       </div>
-      <div style={{ fontSize: '0.9rem', color: '#555' }}>
-        Step {step} of {titles.length}: {titles[step - 1]}
-      </div>
+      <p style={{ fontSize: '0.9rem', marginTop: 8, color: '#555' }}>
+        Step {step} of {total}
+      </p>
     </div>
   );
 }
 
-function Input({ name, value, onChange, placeholder, error }) {
+function Field({ name, value, onChange, placeholder, error }) {
   return (
     <>
-      <input name={name} value={value} onChange={onChange} placeholder={placeholder} style={inputStyle} />
-      {error && <ErrorText text={error} />}
+      <input name={name} value={value} onChange={onChange} placeholder={placeholder} style={input} />
+      {error && <Error text={error} />}
     </>
   );
 }
 
-function ErrorText({ text }) {
-  return <div style={{ color: 'red', fontSize: '0.8rem', marginTop: '-0.5rem', marginBottom: '1rem' }}>{text}</div>;
+function Error({ text }) {
+  return <div style={{ color: 'red', fontSize: '0.8rem', marginBottom: '1rem' }}>{text}</div>;
 }
 
 // Styles
-
-const pageWrapper = {
+const wrapper = {
   minHeight: '100vh',
-  background: '#fafafa',
+  background: '#f5f5f5',
   display: 'flex',
-  justifyContent: 'center',
   alignItems: 'center',
+  justifyContent: 'center',
   padding: '2rem'
 };
 
-const cardStyle = {
+const card = {
   background: '#fff',
-  borderRadius: '12px',
+  borderRadius: 12,
   padding: '2rem',
-  maxWidth: '480px',
+  maxWidth: 500,
   width: '100%',
-  boxShadow: '0 6px 20px rgba(0, 0, 0, 0.08)'
+  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
 };
 
-const headerStyle = {
-  marginBottom: '1rem',
-  fontSize: '1.5rem',
-  fontWeight: 'bold',
-  color: '#c80000'
+const title = {
+  fontSize: '1.4rem',
+  fontWeight: 600,
+  color: '#c80000',
+  marginBottom: '1.25rem'
 };
 
-const inputStyle = {
+const input = {
   width: '100%',
   padding: '0.75rem',
-  marginBottom: '1rem',
-  borderRadius: '6px',
+  borderRadius: 6,
   border: '1px solid #ccc',
-  fontSize: '1rem'
+  fontSize: '1rem',
+  marginBottom: '1rem'
 };
 
-const labelStyle = {
-  display: 'block',
-  marginBottom: '0.5rem',
-  fontWeight: '600'
+const label = {
+  fontWeight: 'bold',
+  marginBottom: '0.25rem',
+  display: 'block'
 };
 
 const checkboxGroup = {
@@ -254,27 +236,27 @@ const checkboxGroup = {
   marginBottom: '1rem'
 };
 
-const buttonStyle = {
-  width: '100%',
-  padding: '0.75rem',
-  backgroundColor: '#c80000',
-  color: '#fff',
-  border: 'none',
-  borderRadius: '6px',
-  fontSize: '1rem',
-  cursor: 'pointer',
-  marginTop: '1rem'
-};
-
-const secondaryButton = {
-  ...buttonStyle,
-  backgroundColor: '#eee',
-  color: '#333'
-};
-
 const buttonRow = {
   display: 'flex',
   justifyContent: 'space-between',
   gap: '1rem',
-  marginTop: '1rem'
+  marginTop: '1.5rem'
+};
+
+const primaryBtn = {
+  flex: 1,
+  background: '#c80000',
+  color: '#fff',
+  border: 'none',
+  padding: '0.75rem',
+  borderRadius: 6,
+  fontWeight: 600,
+  fontSize: '1rem',
+  cursor: 'pointer'
+};
+
+const secondaryBtn = {
+  ...primaryBtn,
+  background: '#eee',
+  color: '#333'
 };
