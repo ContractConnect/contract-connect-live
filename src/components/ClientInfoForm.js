@@ -9,6 +9,13 @@ export default function ClientInfoForm() {
     room: '', tasks: [], photos: [], estimate: 0
   });
 
+  const taskOptions = [
+    { key: 'paint', label: 'Paint', icon: '🖌️' },
+    { key: 'flooring', label: 'Flooring', icon: '🪵' },
+    { key: 'drywall', label: 'Drywall', icon: '🧱' },
+    { key: 'lighting', label: 'Lighting', icon: '💡' }
+  ];
+
   const taskPricing = {
     paint: 2.25,
     flooring: 6.25,
@@ -23,13 +30,12 @@ export default function ClientInfoForm() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleTaskChange = (e) => {
-    const { value, checked } = e.target;
+  const toggleTask = (task) => {
     setFormData(prev => ({
       ...prev,
-      tasks: checked
-        ? [...prev.tasks, value]
-        : prev.tasks.filter(task => task !== value)
+      tasks: prev.tasks.includes(task)
+        ? prev.tasks.filter(t => t !== task)
+        : [...prev.tasks, task]
     }));
   };
 
@@ -137,10 +143,21 @@ export default function ClientInfoForm() {
             </select>
             {errors.room && <Error text={errors.room} />}
 
-            <label style={label}>Tasks Needed</label>
-            <div style={checkboxGroup}>
-              {['paint', 'flooring', 'drywall', 'lighting'].map(task => (
-                <label key={task}><input type="checkbox" value={task} checked={formData.tasks.includes(task)} onChange={handleTaskChange} /> {task}</label>
+            <label style={label}>Select Tasks</label>
+            <div style={taskGrid}>
+              {taskOptions.map(({ key, label, icon }) => (
+                <div
+                  key={key}
+                  onClick={() => toggleTask(key)}
+                  style={{
+                    ...taskTile,
+                    backgroundColor: formData.tasks.includes(key) ? '#c80000' : '#f1f1f1',
+                    color: formData.tasks.includes(key) ? '#fff' : '#000'
+                  }}
+                >
+                  <span style={{ fontSize: '1.5rem' }}>{icon}</span>
+                  <div>{label}</div>
+                </div>
               ))}
             </div>
             {errors.tasks && <Error text={errors.tasks} />}
@@ -163,6 +180,8 @@ export default function ClientInfoForm() {
     </div>
   );
 }
+
+// Subcomponents
 
 function ProgressBar({ step, total }) {
   const percent = (step - 1) / (total - 1) * 100;
@@ -192,6 +211,7 @@ function Error({ text }) {
 }
 
 // Styles
+
 const wrapper = {
   minHeight: '100vh',
   background: '#f5f5f5',
@@ -199,8 +219,7 @@ const wrapper = {
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'flex-start',
-  padding: '0px 1rem 1rem',
-  marginTop: '0'
+  padding: '0px 1rem 1rem'
 };
 
 const logoWrapper = {
@@ -209,7 +228,7 @@ const logoWrapper = {
 };
 
 const logoStyle = {
-  width: '500px', // doubled from 250px
+  width: '500px',
   height: 'auto',
   display: 'block',
   marginBottom: '1rem'
@@ -246,13 +265,6 @@ const label = {
   display: 'block'
 };
 
-const checkboxGroup = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '0.5rem',
-  marginBottom: '1rem'
-};
-
 const buttonRow = {
   display: 'flex',
   justifyContent: 'space-between',
@@ -276,4 +288,22 @@ const secondaryBtn = {
   ...primaryBtn,
   background: '#eee',
   color: '#333'
+};
+
+const taskGrid = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(2, 1fr)',
+  gap: '1rem',
+  marginBottom: '1rem'
+};
+
+const taskTile = {
+  borderRadius: '8px',
+  padding: '1rem',
+  textAlign: 'center',
+  cursor: 'pointer',
+  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+  fontWeight: '600',
+  fontSize: '1rem',
+  transition: 'all 0.2s ease'
 };
