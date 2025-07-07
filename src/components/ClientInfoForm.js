@@ -20,8 +20,7 @@ export default function ClientInfoForm() {
     { key: 'hvac', label: 'HVAC', icon: 'fa-temperature-high', rate: 950 },
     { key: 'windows', label: 'Windows', icon: 'fa-window-maximize', rate: 650 },
     { key: 'doors', label: 'Doors', icon: 'fa-door-open', rate: 300 },
-    { key: 'landscaping', label: 'Landscaping', icon: 'fa-tree', rate: 700 },
-    { key: 'cabinets', label: 'Cabinets', icon: 'fa-kitchen-set', rate: 1200 }
+    { key: 'landscaping', label: 'Landscaping', icon: 'fa-tree', rate: 700 }
   ];
 
   useEffect(() => {
@@ -32,7 +31,6 @@ export default function ClientInfoForm() {
   }, []);
 
   useEffect(() => {
-    // Recalculate total estimate live
     let total = 0;
     for (const task of formData.tasks) {
       const t = taskOptions.find(opt => opt.key === task);
@@ -90,6 +88,7 @@ export default function ClientInfoForm() {
     setStep(step - 1);
     setErrors({});
   };
+
   const renderPreview = () => (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '1rem' }}>
       {formData.photos.map((file, idx) => (
@@ -196,7 +195,6 @@ export default function ClientInfoForm() {
 }
 
 // Reusable UI
-
 function ProgressBar({ step, total }) {
   const percent = (step - 1) / (total - 1) * 100;
   return (
@@ -231,7 +229,6 @@ function Error({ text }) {
 }
 
 // Styles
-
 const wrapper = {
   minHeight: '100vh',
   background: '#f5f5f5',
@@ -243,7 +240,7 @@ const wrapper = {
 };
 
 const logoStyle = {
-  width: '500px',
+  width: '400px',
   height: 'auto',
   marginBottom: '1rem'
 };
